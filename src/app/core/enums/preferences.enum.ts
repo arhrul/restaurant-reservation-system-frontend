@@ -1,5 +1,11 @@
 export enum Preference {
-  WINDOW = 'Next to the window',
-  PRIVATE = 'Private',
-  ACCESSIBILITY = 'Accessibility',
+  WINDOW,
+  PRIVATE,
+  ACCESSIBLE,
 }
+
+export const PreferencesLabels: Record<Preference, string> = {
+  [Preference.WINDOW]: "Next to the window",
+  [Preference.PRIVATE]: "Private",
+  [Preference.ACCESSIBLE]: "Accessible",
+};
