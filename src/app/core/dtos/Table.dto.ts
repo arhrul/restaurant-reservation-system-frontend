@@ -9,4 +9,5 @@ export interface Table {
   accessible: boolean;
 
   advised: boolean;
+  available: boolean;
 }

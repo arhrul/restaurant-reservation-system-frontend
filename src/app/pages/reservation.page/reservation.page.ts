@@ -96,12 +96,12 @@ export class ReservationPage implements OnInit {
     this.selectedTable = null;
   }
 
-  hasAdvisedTables(tables: Table[]): boolean {
-    return tables.some(t => t.advised);
+  hasAvailableTables(tables: Table[]): boolean {
+    return tables.some(t => t.available);
   }
 
   selectTable(table: Table) {
-    if (!table.advised) return;
+    if (!table.available) return;
 
     this.selectedTable = table;
   }

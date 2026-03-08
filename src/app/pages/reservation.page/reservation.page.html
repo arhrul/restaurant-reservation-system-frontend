@@ -62,18 +62,23 @@
 
   <div class="container p-5 col-10">
     @if (filteredTables$ | async; as tables) {
-      @if (hasAdvisedTables(tables)) {
+      @if (hasAvailableTables(tables)) {
         <h3>Select a Table</h3>
         <div class="tables-grid">
           @for (table of tables; track table.id) {
             <div
               class="table-card"
-              [class.selectable]="table.advised"
-              [class.disabled]="!table.advised"
+              [class.selectable]="table.available"
+              [class.disabled]="!table.available"
+              [class.advised]="table.advised"
               [class.selected]="selectedTable?.id === table.id"
               [style.grid-column]="table.x"
               [style.grid-row]="table.y"
               (click)="selectTable(table)">
+
+              @if (table.advised) {
+                <div class="recommended-badge">Best match</div>
+              }
 
               <div class="table-header">
                 <div class="capacity">{{table.capacity}}</div>
@@ -99,9 +104,8 @@
         </button>
 
       } @else {
-
         <p class="no-tables-message">
-          Unfortunately there are no suitable tables available for your criteria.
+          Unfortunately there are no tables available at this time.
         </p>
       }
     }
