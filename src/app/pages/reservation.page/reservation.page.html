@@ -1,0 +1,128 @@
+@if (!reservationSuccess) {
+  <div class="container p-5 col-6">
+    <form [formGroup]="form" class="d-flex flex-column">
+      <div class="row">
+        <mat-form-field class="col-4">
+          <mat-label>Firstname</mat-label>
+          <input matInput formControlName="firstname">
+        </mat-form-field>
+
+        <mat-form-field class="col-4">
+          <mat-label>Lastname</mat-label>
+          <input matInput formControlName="lastname">
+        </mat-form-field>
+
+        <mat-form-field class="col-4">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email">
+        </mat-form-field>
+      </div>
+
+      <div class="row">
+        <mat-form-field class="col-4">
+          <mat-label>Date</mat-label>
+          <input matInput [matDatepicker]="datepicker" formControlName="date">
+          <mat-datepicker #datepicker></mat-datepicker>
+          <mat-datepicker-toggle [for]="datepicker" matSuffix></mat-datepicker-toggle>
+        </mat-form-field>
+
+        <mat-form-field class="col-4">
+          <mat-label>Time</mat-label>
+          <input matInput [matTimepicker]="timepicker" formControlName="time">
+          <mat-timepicker #timepicker></mat-timepicker>
+          <mat-timepicker-toggle [for]="timepicker" matSuffix></mat-timepicker-toggle>
+        </mat-form-field>
+
+        <mat-form-field class="col-4">
+          <mat-label>Number of people</mat-label>
+          <input matInput type="number" formControlName="numberOfPeople">
+        </mat-form-field>
+      </div>
+
+      <mat-form-field>
+        <mat-label>Preferences</mat-label>
+        <mat-select formControlName="preferences" multiple>
+          @for (pref of preferenceList; track pref) {
+            <mat-option [value]="pref.value">{{pref.label}}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <button
+        type="button"
+        matButton="filled"
+        class="rounded-2 w-100"
+        [disabled]="!form.valid"
+        (click)="onFilter()">
+        SHOW RESULTS
+      </button>
+
+    </form>
+  </div>
+
+  <div class="container p-5 col-10">
+    @if (filteredTables$ | async; as tables) {
+      @if (hasAdvisedTables(tables)) {
+        <h3>Select a Table</h3>
+        <div class="tables-grid">
+          @for (table of tables; track table.id) {
+            <div
+              class="table-card"
+              [class.selectable]="table.advised"
+              [class.disabled]="!table.advised"
+              [class.selected]="selectedTable?.id === table.id"
+              [style.grid-column]="table.x"
+              [style.grid-row]="table.y"
+              (click)="selectTable(table)">
+
+              <div class="table-header">
+                <div class="capacity">{{table.capacity}}</div>
+                <div class="capacity-text">seats</div>
+              </div>
+
+              <div class="table-body">
+                @if (table.window) { <span class="tag window">Window</span> }
+                @if (table.private) { <span class="tag private">Private</span> }
+                @if (table.accessible) { <span class="tag accessible">Accessible</span> }
+              </div>
+            </div>
+          }
+        </div>
+
+        <button
+          type="button"
+          matButton="filled"
+          class="reserve-button"
+          [disabled]="!selectedTable"
+          (click)="submitReservation()">
+          RESERVE SELECTED TABLE
+        </button>
+
+      } @else {
+
+        <p class="no-tables-message">
+          Unfortunately there are no suitable tables available for your criteria.
+        </p>
+      }
+    }
+
+  </div>
+
+} @else {
+  <div class="success-page">
+    <div class="success-card">
+      <div class="success-icon">
+        ✓
+      </div>
+      <h2>Reservation Confirmed</h2>
+      <p>
+        Your table has been successfully reserved.
+      </p>
+      <div class="reservation-details">
+        <div>{{form.value.firstname}} {{form.value.lastname}}</div>
+        <div>{{form.value.email}}</div>
+        <div>Table for {{form.value.numberOfPeople}}</div>
+      </div>
+    </div>
+  </div>
+}
